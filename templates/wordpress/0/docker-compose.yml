@@ -1,0 +1,28 @@
+version: '2'
+services:
+  wordpress:
+    image: wordpress
+    environment:
+      WORDPRESS_DATABASE_PASSWORD: root
+    stdin_open: true
+    tty: true
+    links:
+    - mysql:mysql
+    labels:
+      io.rancher.container.pull_image: always
+  lb:
+    image: rancher/lb-service-haproxy:v0.7.15
+    ports:
+    - 10080:10080/tcp
+    labels:
+      io.rancher.container.agent.role: environmentAdmin,agent
+      io.rancher.container.agent_service.drain_provider: 'true'
+      io.rancher.container.create_agent: 'true'
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
